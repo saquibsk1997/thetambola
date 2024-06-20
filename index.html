@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tambola - Fun Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-color: #f0f0f0;
+        }
+        header {
+            width: 100%;
+            background-color: #4CAF50;
+            color: white;
+            text-align: left;
+            padding: 20px;
+            font-size: 24px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .container {
+            display: flex;
+            flex: 1;
+        }
+        .section {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+            text-decoration: none;
+        }
+        .left {
+            background-color: blue;
+            cursor: pointer;
+        }
+        .right {
+            background-color: red;
+            cursor: pointer;
+        }
+        /* Additional Styles for Random Ticket Page */
+        .random-ticket-page {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+        .random-ticket-page header {
+            width: 100%;
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            padding: 20px 0;
+            font-size: 24px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 0;
+        }
+        .random-ticket-page .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+            margin-top: 80px; /* Adjust this value to avoid overlapping with the header */
+        }
+        .random-ticket-page table {
+            width: 90%;
+            max-width: 800px;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background-color: white;
+            table-layout: fixed; /* Fixed table layout */
+        }
+        .random-ticket-page th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+            word-wrap: break-word; /* Ensure content wraps within the fixed width */
+        }
+        .random-ticket-page th {
+            background-color: #f2f2f2;
+        }
+        .random-ticket-page .button-container {
+            margin-top: 20px;
+        }
+        .random-ticket-page button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .random-ticket-page button:hover {
+            background-color: #45a049;
+        }
+        /* Styles for Create Your Own Ticket Page */
+        .create-ticket-page {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+        .create-ticket-page header {
+            width: 100%;
+            background-color: #4CAF50;
+            color: white;
+            text-align: left;
+            padding: 20px;
+            font-size: 24px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .create-ticket-page .container {
+            display: flex;
+            flex-direction: column;
+			width: 100%;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+        }
+        .create-ticket-page table {
+            width: 80%;
+            max-width: 800px;
+            border-collapse: collapse;
+            background-color: white;
+            margin: 20px 0;
+        }
+        .create-ticket-page th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        .create-ticket-page th {
+            background-color: #f2f2f2;
+        }
+        .create-ticket-page .button-container {
+            margin-top: 20px;
+        }
+        .create-ticket-page .create-ticket-btn, .create-ticket-page .modify-ticket-btn {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .create-ticket-page .create-ticket-btn:disabled {
+            background-color: #ddd;
+            cursor: not-allowed;
+        }
+        .create-ticket-page .generated-ticket-container {
+            display: none;
+			  width: 100%;
+            flex-direction: column;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        Tambola - Fun Game
+    </header>
+    <div id="mainPage" class="container">
+        <div onclick="showRandomTicketPage()" class="section left">
+            Pick Random Ticket
+        </div>
+        <div onclick="showCreateTicketPage()" class="section right">
+            Create Your Own Ticket
+        </div>
+    </div>
+
+    <div id="randomTicketPage" class="random-ticket-page">
+        <header>
+            Your Random Ticket
+        </header>
+        <div class="container">
+            <table id="ticketTable">
+                <thead>
+                    <tr>
+                        <th>North India</th>
+                        <th>East India</th>
+                        <th>West India</th>
+                        <th>South India</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td id="north1"></td>
+                        <td id="east1"></td>
+                        <td id="west1"></td>
+                        <td id="south1"></td>
+                    </tr>
+                    <tr>
+                        <td id="north2"></td>
+                        <td id="east2"></td>
+                        <td id="west2"></td>
+                        <td id="south2"></td>
+                    </tr>
+                    <tr>
+                        <td id="north3"></td>
+                        <td id="east3"></td>
+                        <td id="west3"></td>
+                        <td id="south3"></td>
+                    </tr>
+                    <tr>
+                        <td id="north4"></td>
+                        <td id="east4"></td>
+                        <td id="west4"></td>
+                        <td id="south4"></td>
+                    </tr>
+                    <tr>
+                        <td id="north5"></td>
+                        <td id="east5"></td>
+                        <td id="west5"></td>
+                        <td id="south5"></td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="button-container">
+                <button onclick="generateRandomTicket()">Regenerate</button>
+            </div>
+            <div class="button-container">
+                <button onclick="showMainPage()">Go Back</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="createTicketPage" class="create-ticket-page">
+        <header>
+            Create Your Own Ticket
+        </header>
+        <div class="container">
+            <table id="selection-table">
+                <thead>
+                    <tr>
+                        <th>North India</th>
+                        <th>East India</th>
+                        <th>West India</th>
+                        <th>South India</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><input type="checkbox" name="north" value="Amritsar"> Amritsar</td>
+                        <td><input type="checkbox" name="east" value="Kolkata"> Kolkata</td>
+                        <td><input type="checkbox" name="west" value="Mumbai"> Mumbai</td>
+                        <td><input type="checkbox" name="south" value="Chennai"> Chennai</td>
+                    </tr>
+					<tr>
+    <td><input type="checkbox" name="north" value="Delhi"> Delhi</td>
+    <td><input type="checkbox" name="east" value="Patna"> Patna</td>
+    <td><input type="checkbox" name="west" value="Surat"> Surat</td>
+    <td><input type="checkbox" name="south" value="Mysuru"> Mysuru</td>
+</tr>
+<tr>
+    <td><input type="checkbox" name="north" value="Haridwar"> Haridwar</td>
+    <td><input type="checkbox" name="east" value="Bhubaneswar"> Bhubaneswar</td>
+    <td><input type="checkbox" name="west" value="Nagpur"> Nagpur</td>
+    <td><input type="checkbox" name="south" value="Visakhapatnam"> Visakhapatnam</td>
+</tr>
+<tr>
+    <td><input type="checkbox" name="north" value="Shimla"> Shimla</td>
+    <td><input type="checkbox" name="east" value="Guwahati"> Guwahati</td>
+    <td><input type="checkbox" name="west" value="Ahmedabad"> Ahmedabad</td>
+    <td><input type="checkbox" name="south" value="Coimbatore"> Coimbatore</td>
+</tr>
+<tr>
+    <td><input type="checkbox" name="north" value="Jaipur"> Jaipur</td>
+    <td><input type="checkbox" name="east" value="Ranchi"> Ranchi</td>
+    <td><input type="checkbox" name="west" value="Pune"> Pune</td>
+    <td><input type="checkbox" name="south" value="Kanyakumari"> Kanyakumari</td>
+</tr>
+<tr>
+    <td><input type="checkbox" name="north" value="Agra"> Agra</td>
+    <td><input type="checkbox" name="east" value="Cuttack"> Cuttack</td>
+    <td><input type="checkbox" name="west" value="Vadodara"> Vadodara</td>
+    <td><input type="checkbox" name="south" value="Bangalore"> Bangalore</td>
+</tr>
+<tr>
+    <td><input type="checkbox" name="north" value="Lucknow"> Lucknow</td>
+    <td><input type="checkbox" name="east" value="Jamshedpur"> Jamshedpur</td>
+    <td><input type="checkbox" name="west" value="Nashik"> Nashik</td>
+    <td><input type="checkbox" name="south" value="Hyderabad"> Hyderabad</td>
+</tr>
+<tr>
+    <td><input type="checkbox" name="north" value="Varanasi"> Varanasi</td>
+    <td><input type="checkbox" name="east" value="Siliguri"> Siliguri</td>
+    <td><input type="checkbox" name="west" value="Rajkot"> Rajkot</td>
+    <td><input type="checkbox" name="south" value="Kochi"> Kochi</td>
+</tr>
+<tr>
+    <td><input type="checkbox" name="north" value="Chandigarh"> Chandigarh</td>
+    <td><input type="checkbox" name="east" value="Durgapur"> Durgapur</td>
+    <td><input type="checkbox" name="west" value="Aurangabad"> Aurangabad</td>
+    <td><input type="checkbox" name="south" value="Thiruvananthapuram"> Thiruvananthapuram</td>
+</tr>
+<tr>
+    <td><input type="checkbox" name="north" value="Jodhpur"> Jodhpur</td>
+    <td><input type="checkbox" name="east" value="Agartala"> Agartala</td>
+    <td><input type="checkbox" name="west" value="Kolhapur"> Kolhapur</td>
+    <td><input type="checkbox" name="south" value="Vijayawada"> Vijayawada</td>
+</tr>
+<tr>
+    <td><input type="checkbox" name="north" value="Dehradun"> Dehradun</td>
+    <td><input type="checkbox" name="east" value="Shillong"> Shillong</td>
+    <td><input type="checkbox" name="west" value="Panaji"> Panaji</td>
+    <td><input type="checkbox" name="south" value="Mangalore"> Mangalore</td>
+</tr>
+<tr>
+    <td><input type="checkbox" name="north" value="Srinagar"> Srinagar</td>
+    <td><input type="checkbox" name="east" value="Imphal"> Imphal</td>
+    <td><input type="checkbox" name="west" value="Gandhinagar"> Gandhinagar</td>
+    <td><input type="checkbox" name="south" value="Tiruchirappalli"> Tiruchirappalli</td>
+</tr>
+<tr>
+    <td><input type="checkbox" name="north" value="Kanpur"> Kanpur</td>
+    <td><input type="checkbox" name="east" value="Kohima"> Kohima</td>
+    <td><input type="checkbox" name="west" value="Bhavnagar"> Bhavnagar</td>
+    <td><input type="checkbox" name="south" value="Kozhikode"> Kozhikode</td>
+</tr>
+<tr>
+    <td><input type="checkbox" name="north" value="Nainital"> Nainital</td>
+    <td><input type="checkbox" name="east" value="Itanagar"> Itanagar</td>
+    <td><input type="checkbox" name="west" value="Indore"> Indore</td>
+    <td><input type="checkbox" name="south" value="Kollam"> Kollam</td>
+</tr>
+<tr>
+    <td><input type="checkbox" name="north" value="Udaipur"> Udaipur</td>
+    <td><input type="checkbox" name="east" value="Gangtok"> Gangtok</td>
+    <td><input type="checkbox" name="west" value="Solapur"> Solapur</td>
+    <td><input type="checkbox" name="south" value="Madurai"> Madurai</td>
+</tr>
+                    <!-- Add more rows here as needed -->
+                </tbody>
+            </table>
+            <div class="button-container">
+                <button class="create-ticket-btn" onclick="createTicket()">Create the ticket</button>
+            </div>
+            <div class="generated-ticket-container" id="generated-ticket-container">
+                <table id="ticket-table">
+				
+                    <!-- Generated ticket will appear here -->
+                </table>
+                <div class="button-container">
+                    <button class="modify-ticket-btn" onclick="modifyTicket()">Modify Ticket</button>
+                </div>
+            </div>
+            <div class="button-container">
+                <button class="create-ticket-btn" onclick="showMainPage()">Go Back</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function getRandomElements(arr, count) {
+            const shuffled = arr.sort(() => 0.5 - Math.random());
+            return shuffled.slice(0, count);
+        }
+
+        const northIndia = ["Amritsar", "Delhi", "Haridwar", "Shimla", "Jaipur", "Agra", "Lucknow", "Varanasi", "Chandigarh", "Jodhpur", "Dehradun", "Srinagar", "Kanpur", "Nainital", "Udaipur"];
+        const eastIndia = ["Kolkata", "Patna", "Bhubaneswar", "Guwahati", "Ranchi", "Cuttack", "Jamshedpur", "Siliguri", "Durgapur", "Agartala", "Shillong", "Imphal", "Kohima", "Itanagar", "Gangtok"];
+        const westIndia = ["Mumbai", "Surat", "Nagpur", "Ahmedabad", "Pune", "Vadodara", "Nashik", "Rajkot", "Aurangabad", "Kolhapur", "Panaji", "Gandhinagar", "Bhavnagar", "Indore", "Solapur"];
+        const southIndia = ["Chennai", "Mysuru", "Visakhapatnam", "Coimbatore", "Kanyakumari", "Bangalore", "Hyderabad", "Kochi", "Thiruvananthapuram", "Vijayawada", "Mangalore", "Tiruchirappalli", "Kozhikode", "Kollam", "Madurai"];
+
+        function generateRandomTicket() {
+            const northRandom = getRandomElements(northIndia, 5);
+            const eastRandom = getRandomElements(eastIndia, 5);
+            const westRandom = getRandomElements(westIndia, 5);
+            const southRandom = getRandomElements(southIndia, 5);
+
+            for (let i = 1; i <= 5; i++) {
+                document.getElementById(`north${i}`).textContent = northRandom[i - 1];
+                document.getElementById(`east${i}`).textContent = eastRandom[i - 1];
+                document.getElementById(`west${i}`).textContent = westRandom[i - 1];
+                document.getElementById(`south${i}`).textContent = southRandom[i - 1];
+            }
+        }
+
+        function showRandomTicketPage() {
+            document.getElementById('mainPage').style.display = 'none';
+            document.getElementById('randomTicketPage').style.display = 'flex';
+            generateRandomTicket();
+        }
+
+        function showCreateTicketPage() {
+            document.getElementById('mainPage').style.display = 'none';
+            document.getElementById('createTicketPage').style.display = 'flex';
+        }
+
+        function showMainPage() {
+            document.getElementById('randomTicketPage').style.display = 'none';
+            document.getElementById('createTicketPage').style.display = 'none';
+            document.getElementById('mainPage').style.display = 'flex';
+        }
+
+        function createTicket() {
+            const selectedNames = [];
+            const northCheckboxes = document.getElementsByName('north');
+            const eastCheckboxes = document.getElementsByName('east');
+            const westCheckboxes = document.getElementsByName('west');
+            const southCheckboxes = document.getElementsByName('south');
+
+            let count = 0;
+            [northCheckboxes, eastCheckboxes, westCheckboxes, southCheckboxes].forEach(checkboxes => {
+                let columnCount = 0;
+                checkboxes.forEach(checkbox => {
+                    if (checkbox.checked) {
+                        selectedNames.push(checkbox.value);
+                        count++;
+                        columnCount++;
+                    }
+                });
+                if (columnCount !== 5) {
+                    alert("Please select exactly 5 names from each column.");
+                    return;
+                }
+            });
+
+            if (count !== 20) {
+                alert("Please select exactly 5 names from each column.");
+                return;
+            }
+
+            // Generate and display the ticket table
+            const selectedTable = generateTable(selectedNames);
+            document.getElementById('ticket-table').innerHTML = selectedTable;
+            document.getElementById('generated-ticket-container').style.display = 'flex';
+            document.getElementById('selection-table').style.display = 'none';
+            document.querySelector('.create-ticket-btn').style.display = 'none';
+        }
+
+        function generateTable(names) {
+            let tableHTML = '<thead><tr><th>North India</th><th>East India</th><th>West India</th><th>South India</th></tr></thead><tbody>';
+            for (let i = 0; i < 5; i++) {
+                tableHTML += '<tr>';
+                for (let j = 0; j < 4; j++) {
+                    tableHTML += `<td>${names[i + j * 5]}</td>`;
+                }
+                tableHTML += '</tr>';
+            }
+            tableHTML += '</tbody>';
+            return tableHTML;
+        }
+
+        function modifyTicket() {
+            document.getElementById('generated-ticket-container').style.display = 'none';
+            document.getElementById('selection-table').style.display = 'table';
+            document.querySelector('.create-ticket-btn').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
